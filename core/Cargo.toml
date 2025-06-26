@@ -1,0 +1,58 @@
+[package]
+name = "sgrmath_core"
+version = "0.1.0"
+edition = "2021"
+description = "A foundational library providing GPU acceleration infrastructure through WebGPU (wgpu) shaders for mathematical computations"
+license = "MIT"
+repository = "https://github.com/sgr-team/sgrmath"
+documentation = "https://docs.rs/sgrmath_core"
+readme = "README.md"
+keywords = ["gpu", "wgpu", "shader", "mathematics", "computation", "parallel"]
+categories = ["science", "algorithms", "graphics"]
+rust-version = "1.70.0"
+
+[package.metadata.docs.rs]
+# Enable all features for documentation
+all-features = true
+# Enable default features
+default-features = true
+# Set the documentation target
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "wasm32-unknown-unknown"
+]
+# Set the documentation version
+rustdoc-args = ["--cfg", "docsrs"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bytemuck = "1.23.0"
+thiserror = "2.0.12"
+tokio = { version="1.45.0", features = ["rt", "macros", "rt-multi-thread"] }
+wgpu = "25.0.0"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[[example]]
+name = "wgpu_context"
+path = "examples/wgpu_context.rs"
+
+[[example]]
+name = "storage_buffer"
+path = "examples/storage_buffer.rs"
+
+[[example]]
+name = "value_buffer"
+path = "examples/value_buffer.rs"
+
+[[example]]
+name = "readback_buffer"
+path = "examples/readback_buffer.rs"
+
+[[example]]
+name = "simple_shader"
+path = "examples/simple_shader.rs"

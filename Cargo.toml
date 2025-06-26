@@ -1,0 +1,29 @@
+[workspace]
+resolver = "2"
+members = [
+    "core", 
+    "ga",
+    "problems/pn"
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Dmitry <balakovdmitry@gmail.com> Balakov"]
+license = "MIT"
+readme = "README.md"
+
+[workspace.dependencies]
+bytemuck = "1.23.0"
+tokio = { version="1.45.0", features = ["rt", "macros", "rt-multi-thread"] }
+wgpu = "25.0.0"
+
+[workspace.metadata]
+# Scripts for development
+[workspace.metadata.scripts]
+check = "cargo check"
+test = "cargo test"
+doc = "cargo doc --no-deps"
+fmt = "cargo fmt --all"
+clippy = "cargo clippy --all-targets --all-features -- -D warnings"
+lint = "cargo clippy --all-targets --all-features -- -D warnings && cargo fmt --all -- --check"

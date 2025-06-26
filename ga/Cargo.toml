@@ -1,0 +1,38 @@
+[package]
+name = "sgrmath_ga"
+version = "0.1.0"
+edition = "2021"
+description = "Genetic Algorithm implementation with GPU acceleration using wgpu"
+license = "MIT"
+repository = "https://github.com/sgr-team/sgrmath"
+documentation = "https://docs.rs/sgrmath_ga"
+readme = "README.md"
+keywords = ["genetic-algorithm", "evolutionary-computation", "gpu", "wgpu", "optimization", "parallel", "machine-learning", "gpu-compute"]
+categories = ["algorithms", "science", "gpu-compute", "machine-learning", "optimization"]
+rust-version = "1.70.0"
+
+[package.metadata.docs.rs]
+# Enable all features for documentation
+all-features = true
+# Enable default features
+default-features = true
+# Set the documentation target
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+    "wasm32-unknown-unknown"
+]
+# Set the documentation version
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+bytemuck = "1.23.0"
+rand = "0.9.1"
+rand_distr = "0.5.1"
+sgrmath_core = { path = "../core" }
+tokio = { version="1.45.0", features = ["rt", "macros", "rt-multi-thread"] }
+wgpu = "25.0.0"
+
+[dev-dependencies]
+tokio-test = "0.4"
