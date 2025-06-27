@@ -36,7 +36,7 @@ fn main() {
         .problem(pnp.clone())
         .initializer(continuous::initializers::Random::new())
         .crossover(continuous::crossovers::BLXAlpha::new(2.0))
-        .mutation(continuous::mutations::Random::new(0.035))
+        .mutation(continuous::mutations::Random::new(0.02))
         .compile()
         .run(|ga, index| {
             let (mut min, mut max, mut med) = (f32::INFINITY, f32::NEG_INFINITY, 0.0);
