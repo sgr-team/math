@@ -46,7 +46,7 @@ fn process_csv(wgpu: &WgpuContext, filename: &str, solution: &Solution) {
     let file_path = env::current_dir().unwrap().join(".temp").join(filename);
     let pnp = PNP::from_csv(
         &wgpu, 
-        3, 
+        solution.vectors_count, 
         784, 
         std::fs::read_to_string(format!("./.data/{}", filename)).unwrap(), 
         ','
@@ -103,7 +103,6 @@ fn process_csv(wgpu: &WgpuContext, filename: &str, solution: &Solution) {
             line.push(format!(
                 "{}",
                 (255.0 * (permutation_labels[permutation * pnp.outputs_count + k] as f32 / max_value as f32)) as u32
-                // if permutation_labels[permutation * pnp.outputs_count + k] == max_value { 255 } else { 0 }
             ));
         }
 

@@ -21,14 +21,14 @@ fn main() {
     let wgpu = WgpuContext::new();
     let pnp_train = PNP::from_csv(
         &wgpu, 
-        3, 
+        loaded_solution.vectors_count, 
         784, 
         std::fs::read_to_string("./.data/train.csv").unwrap(), 
         ','
     );
     let pnp_test = PNP::from_csv(
         &wgpu, 
-        3, 
+        loaded_solution.vectors_count, 
         784, 
         std::fs::read_to_string("./.data/test.csv").unwrap(), 
         ','

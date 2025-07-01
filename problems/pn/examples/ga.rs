@@ -8,7 +8,7 @@ fn main() {
     let wgpu = WgpuContext::new();
     let pnp = PNP::from_csv(
         &wgpu, 
-        3, 
+        4, 
         784, 
         std::fs::read_to_string("./.data/train.csv").unwrap(), 
         ','
@@ -28,7 +28,7 @@ fn main() {
             population_size: 50,
             generation_size: 50,
             parents_count: 2,
-            vector_length: 3 * 784,
+            vector_length: pnp.vectors_count * 784,
             min_value: -255.0,
             max_value: 255.0,
         }

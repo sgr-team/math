@@ -24,6 +24,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     }
 
     var result = 0u;
+    var count = 0u;
     for (var p = 0u; p < options.permutations_count; p++) {
         let p_start = permutation_labels_start + p * options.outputs_count;
         let p_end = p_start + options.outputs_count;
