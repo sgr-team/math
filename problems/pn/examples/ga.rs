@@ -8,10 +8,12 @@ fn main() {
     let wgpu = WgpuContext::new();
     let pnp = PNP::from_csv(
         &wgpu, 
-        4, 
+        3, 
         784, 
         std::fs::read_to_string("./.data/train.csv").unwrap(), 
-        ','
+        ',',
+        Some(255.0),
+        None
     );
 
     println!("Permutation Neuron (genetic algorithm example)");
@@ -28,7 +30,7 @@ fn main() {
             population_size: 50,
             generation_size: 50,
             parents_count: 2,
-            vector_length: pnp.vectors_count * 784,
+            vector_length: pnp.vectors_count * pnp.vector_length,
             min_value: -255.0,
             max_value: 255.0,
         }

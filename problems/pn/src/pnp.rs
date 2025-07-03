@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
 
 use sgrmath_core::{Iteration, ProblemParams, StorageBuffer, ValueBuffer, WgpuContext};
 use wgpu::CommandBuffer;
@@ -88,6 +88,8 @@ impl PNP {
         vector_length: usize,
         data: String, 
         delimiter: char,
+        additional_value: Option<f32>,
+        label_mapping: Option<HashMap<u32, u32>>
     ) -> Self {
         let lines = data
             .split("\n")
@@ -98,15 +100,20 @@ impl PNP {
         let mut labels = Vec::new();
 
         let mut examples_count = 0;
-        let mut unique_labels = HashSet::new();
+        let mut max_label = 0;
         'line_loop: for (_, line) in lines {
             let mut example_length = 0;
             for (index, value) in line.split(delimiter).enumerate() {
                 if index == 0 {
                     labels.push(
                         match value.trim().parse::<u32>() {
-                            Ok(label) => {
-                                unique_labels.insert(label);
+                            Ok(l) => {
+                                let label = label_mapping
+                                    .as_ref()
+                                    .map(|m| m.get(&l).map(|v| *v).unwrap_or(l))
+                                    .unwrap_or(l);
+
+                                max_label = max_label.max(label);
                                 label
                             },
                             Err(_) => {
@@ -132,12 +139,16 @@ impl PNP {
                 vector_length, 
                 "Vector length is not consistent {example_length} != {vector_length}"
             );
+
+            if let Some(value) = additional_value {
+                vectors.push(value);
+            }
         }
 
         assert_eq!(
-            examples_count * vector_length, 
+            examples_count * (vector_length + match additional_value { Some(_) => 1, None => 0 }), 
             vectors.len(), 
-            "Examples count is not consistent {examples_count} * {vector_length} != {}", 
+            "Examples count is not consistent {examples_count} * ({vector_length} + 1) != {}", 
             vectors.len()
         );
 
@@ -145,8 +156,8 @@ impl PNP {
             wgpu, 
             examples_count, 
             vectors_count, 
-            vector_length, 
-            unique_labels.len(), 
+            vector_length + 1, 
+            max_label as usize + 1, 
             vectors, 
             labels
         )

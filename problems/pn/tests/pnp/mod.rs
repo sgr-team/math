@@ -40,14 +40,41 @@ fn init() {
 }
 
 #[test]
-fn from_csv() {
+fn from_csv_with_static_value() {
     let ctx = WgpuContext::new();
     let pn = PNP::from_csv(
         &ctx, 
         3, 
         5, 
         "0,0,1,2,3,4\n2,10,9,8,7,6".to_string(), 
-        ','
+        ',',
+        Some(255.0),
+        None
+    );
+    let reader = ReadbackBuffer::new::<u32, _>(&ctx, 12);
+
+    assert_eq!(pn.examples_count, 2);
+    assert_eq!(
+        reader.read::<f32>(&ctx, &pn.examples, 0, 12), 
+        vec![ 0.0, 1.0, 2.0, 3.0, 4.0, 255.0, 10.0, 9.0, 8.0, 7.0, 6.0, 255.0 ]
+    );
+    assert_eq!(
+        reader.read::<u32>(&ctx, &pn.labels, 0, 2), 
+        vec![ 0, 2 ]
+    );
+}
+
+#[test]
+fn from_csv_without_static_value() {
+    let ctx = WgpuContext::new();
+    let pn = PNP::from_csv(
+        &ctx, 
+        3, 
+        5, 
+        "0,0,1,2,3,4\n2,10,9,8,7,6".to_string(), 
+        ',',
+        None,
+        None
     );
     let reader = ReadbackBuffer::new::<u32, _>(&ctx, 10);
 

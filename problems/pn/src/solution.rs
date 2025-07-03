@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use sgrmath_core::{ProblemParams, ReadbackBuffer, StorageBuffer};
 
@@ -12,7 +14,7 @@ pub struct Solution {
     /// Vectors in the solution
     pub vectors: Vec<f32>,
     /// Permutations in the solution (vectors_count! * outputs_count)
-    pub permutations: Vec<u32>,
+    pub permutations: HashMap<usize, u32>,
     /// Training result
     pub result: usize
 }
@@ -26,7 +28,13 @@ impl Solution {
         permutations: Vec<u32>, 
         result: usize
     ) -> Self {
-        Self { vectors_count, outputs_count, vectors, permutations, result }
+        Self { 
+            vectors_count, 
+            outputs_count, 
+            vectors, 
+            permutations: Self::permutations_from_vec(permutations), 
+            result 
+        }
     }
 
     /// Init
@@ -48,7 +56,7 @@ impl Solution {
             vectors_count: pnp.vectors_count,
             outputs_count: pnp.outputs_count,
             vectors,
-            permutations: reader.read(&pnp.wgpu, &permutation_labels, 0, permutations_size),
+            permutations: Self::permutations_from_vec(reader.read(&pnp.wgpu, &permutation_labels, 0, permutations_size)),
             result: reader.read::<f32>(&pnp.wgpu, &params.results, 0, 1)[0] as usize,
         }
     }
@@ -102,9 +110,31 @@ impl Solution {
             vectors_count: pnp.vectors_count,
             outputs_count: pnp.outputs_count,
             vectors,
-            permutations,
+            permutations: Self::permutations_from_vec(permutations),
             result: ReadbackBuffer::new::<f32, _>(&pnp.wgpu, 1)
                 .read::<f32>(&pnp.wgpu, &params.results, 0, 1)[0] as usize,
         }
+    }
+
+    pub fn permutations_from_vec(permutations: Vec<u32>) -> HashMap<usize, u32> {
+        let mut result = HashMap::new();
+        for i in 0..permutations.len() {
+            if permutations[i] == 0 {
+                continue;
+            }
+
+            result.insert(i, permutations[i]);
+        }
+
+        result
+    }
+
+    pub fn permutations_to_vec(pnp: &PNP, permutations: &HashMap<usize, u32>) -> Vec<u32> {
+        let mut result = vec![0; pnp.permutations_count * pnp.outputs_count];
+        for (i, value) in permutations.iter() {
+            result[*i] = *value;
+        }
+
+        result
     }
 }
